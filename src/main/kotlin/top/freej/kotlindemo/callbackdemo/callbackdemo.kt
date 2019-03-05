@@ -5,6 +5,10 @@ package top.freej.kotlindemo.callback
  * （1）创建map
  *     mapOf
  * （2）lambda表达式只有一行，不能用大括号括起来
+ *      // 错误写法，后面的lambda表达式内容不能用大括号括起来
+ *      val f: (s1: String, s2: String) -> String = { s1: String, s2: String ->{(s1 + " " + s2).toUpperCase()}}
+ *      // 正确写法
+ *      val f: (s1: String, s2: String) -> String = { s1: String, s2: String ->(s1 + " " + s2).toUpperCase()}
  * （3）实现类似jquery的回调
  *     在调用时传入的函数如果有多条语句，需要传入匿名函数而不是lambda表达式
  * （4）调用函数的两种方法
@@ -20,6 +24,12 @@ fun main(args: Array<String>) {
     val f: (s1: String, s2: String) -> String = { s1: String, s2: String ->
         (s1 + " " + s2).toUpperCase()
     }
+    /**
+     * 错误写法，后面的lambda表达式内容不能用大括号括起来
+     *  val f: (s1: String, s2: String) -> String = { s1: String, s2: String ->{(s1 + " " + s2).toUpperCase()}}
+     *
+     * */
+
 
     // 直接调用lambda表达式
     println(f("hello", "world"))
@@ -50,6 +60,16 @@ fun main(args: Array<String>) {
 
 }
 
+/**
+ * 类似jQuery的回调函数定义
+ * 在callback中处理返回
+ *
+ * 函数定义中的函数参数
+ *  callback: (data: String, error: String) -> Unit
+ *   参数名     函数参数1     函数参数2       返回类型
+ *
+ *  回调函数返回空值Unit不可省略
+ */
 fun post(url: String, data: Map<String, String>, callback: (data: String, error: String) -> Unit) {
     callback(url + "?" + data.get("username") + "=" + data.get("password"), "success")
     // 方法调用的另一种形式
