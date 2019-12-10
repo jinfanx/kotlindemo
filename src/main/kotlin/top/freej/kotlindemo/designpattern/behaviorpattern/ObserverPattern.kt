@@ -11,7 +11,7 @@ package top.freej.kotlindemo.designpattern
  *
  *
  *
- * @author fanrj
+ * @author jinfanx
  *
  *  观察者设计模式kotlin实现
  *
@@ -32,54 +32,50 @@ package top.freej.kotlindemo.designpattern
  *
  */
 
-fun main(args:Array<String>) {
+fun main() {
     // 初始化数据源，此处需要使用MutableMap，不能用Map，因为Map不可变
-    var map : MutableMap<String,Int> = mutableMapOf("pop" to 20, "hip-hop" to 2, "jazz" to 10)
-    var dataSource : DataSource = DataSource(map)
+    var map: MutableMap<String, Int> = mutableMapOf("pop" to 20, "hip-hop" to 2, "jazz" to 10)
+    var dataSource = DataSource(map)
 
     // 注册监听器（观察者）
     dataSource.register(ChartLister())
     dataSource.register(TableLister())
 
     // 触发改变
-    dataSource.changeData("pop",25)
-    dataSource.changeData("jazz",12)
+    dataSource.changeData("pop", 25)
+    dataSource.changeData("jazz", 12)
 }
 
 /**
  * 观察者接口
  */
-interface DataChangeEventLister{
-    fun render()
+interface DataChangeEventLister {
+    fun render(data: Map<String, Int>)
 }
 
 /**
  * 数据源（被观察者）
  */
-class DataSource(var data : MutableMap<String,Int>){
+class DataSource(var data: MutableMap<String, Int>) {
     // 监听器列表
-    var listeners:MutableList<DataChangeEventLister> = mutableListOf()
-    // 构造方法
-    init {
-        this.data = data;
-    }
+    var listeners = mutableListOf<DataChangeEventLister>()
 
     /**
      * 监听器注册方法
      */
-    fun register(listener:DataChangeEventLister){
+    fun register(listener: DataChangeEventLister) {
         listeners.add(listener)
     }
 
     /**
      * 修改数据源方法
      */
-    fun changeData(type : String, number : Int){
+    fun changeData(type: String, number: Int) {
         // 数据改变
-        data.set(type,number)
+        data[type] = number
 
         // 通知观察者
-        listeners.forEach({it->it.render()})
+        listeners.forEach { it.render(data) }
 
     }
 }
@@ -87,18 +83,30 @@ class DataSource(var data : MutableMap<String,Int>){
 /**
  * 监听器实现
  */
-class ChartLister : DataChangeEventLister{
-    override fun render() {
+class ChartLister : DataChangeEventLister {
+    override fun render(data: Map<String, Int>) {
         println("重新渲染统计图")
+        var total = data.values.sum()
+
+        data.forEach {
+            println("${it.key}: ${it.value}, ${String.format("0.00", (it.value.toFloat() / total) * 100)}%")
+        }
+        println()
     }
 }
 
 /**
  * 监听器实现
  */
-class TableLister : DataChangeEventLister{
-    override fun render() {
+class TableLister : DataChangeEventLister {
+    override fun render(data: Map<String, Int>) {
         println("重新渲染统计表")
+        val total = data.values.sum()
+
+        data.forEach {
+            println("${it.key}: ${it.value}, ${String.format("%.2f", (it.value.toFloat() / total) * 100)}%")
+        }
+        println()
     }
 }
 

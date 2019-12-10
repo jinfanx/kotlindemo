@@ -1,77 +1,93 @@
 package top.freej.kotlindemo.callback
 
 /**
- * Óï·¨µã£º
- * £¨1£©´´½¨map
- *     mapOf
- * £¨2£©lambda±í´ïÊ½Ö»ÓĞÒ»ĞĞ£¬²»ÄÜÓÃ´óÀ¨ºÅÀ¨ÆğÀ´
- *      // ´íÎóĞ´·¨£¬ºóÃæµÄlambda±í´ïÊ½ÄÚÈİ²»ÄÜÓÃ´óÀ¨ºÅÀ¨ÆğÀ´
- *      val f: (s1: String, s2: String) -> String = { s1: String, s2: String ->{(s1 + " " + s2).toUpperCase()}}
- *      // ÕıÈ·Ğ´·¨
- *      val f: (s1: String, s2: String) -> String = { s1: String, s2: String ->(s1 + " " + s2).toUpperCase()}
- * £¨3£©ÊµÏÖÀàËÆjqueryµÄ»Øµ÷
- *     ÔÚµ÷ÓÃÊ±´«ÈëµÄº¯ÊıÈç¹ûÓĞ¶àÌõÓï¾ä£¬ĞèÒª´«ÈëÄäÃûº¯Êı¶ø²»ÊÇlambda±í´ïÊ½
- * £¨4£©µ÷ÓÃº¯ÊıµÄÁ½ÖÖ·½·¨
- *      µÚÒ»ÖÖ£ºÏñÆÕÍ¨·½·¨Ò»Ñù method(arg1,atr2)
- *      µÚ¶şÖÖ£ºmethod.call(arg1,atg2)
+ * è¯­æ³•ç‚¹ï¼š
+ * 1. åˆ›å»ºmap
  *
+ * 2. lambdaè¡¨è¾¾å¼
+ *    èƒ½è®¿é—®å½“å‰ä¸Šä¸‹æ–‡çš„åŒ¿åä»£ç å—,åœ¨kotlinå’Œpythonä¸­åªèƒ½æœ‰ä¸€è¡Œ, å¯ä»¥æœ‰å‚æ•°å’Œè¿”å›å€¼,è¯¥è¡Œçš„å€¼å³ä¸ºè¿”å›å€¼,ä¸èƒ½å†™return
  *
+ * 3. å®ç°ç±»ä¼¼jqueryçš„å›è°ƒ
+ *    åœ¨è°ƒç”¨æ—¶ä¼ å…¥çš„å‡½æ•°å¦‚æœæœ‰å¤šæ¡è¯­å¥ï¼Œéœ€è¦ä¼ å…¥åŒ¿åå‡½æ•°è€Œä¸æ˜¯lambdaè¡¨è¾¾å¼
+ *
+ * 4. è°ƒç”¨å‡½æ•°çš„ä¸¤ç§æ–¹æ³•
+ *    ç¬¬ä¸€ç§ï¼šåƒæ™®é€šæ–¹æ³•ä¸€æ · method(arg1,atr2)
+ *    ç¬¬äºŒç§ï¼šmethod.invoke(arg1,arg2)
+ *
+ * 5. å­—ç¬¦ä¸²æ¨¡æ¿
+ *    è®¿é—®å¤æ‚å¯¹è±¡çš„å±æ€§éœ€è¦ç”¨ç”¨å¤§æ‹¬å·, eg: ${obj.attr1}
  *
  */
-fun main(args: Array<String>) {
 
-    // lambda±í´ïÊ½¶¨Òå
-    val f: (s1: String, s2: String) -> String = { s1: String, s2: String ->
-        (s1 + " " + s2).toUpperCase()
+
+fun lambdaDemo() {
+    val username = "user1"
+    val func1 = {
+        "I am a lambda, and I can visit current context! username: $username"
     }
-    /**
-     * ´íÎóĞ´·¨£¬ºóÃæµÄlambda±í´ïÊ½ÄÚÈİ²»ÄÜÓÃ´óÀ¨ºÅÀ¨ÆğÀ´
-     *  val f: (s1: String, s2: String) -> String = { s1: String, s2: String ->{(s1 + " " + s2).toUpperCase()}}
-     *
-     * */
+    println(func1())
 
-
-    // Ö±½Óµ÷ÓÃlambda±í´ïÊ½
-    println(f("hello", "world"))
-
-    // »Øµ÷ÓĞ¶àÌõÓï¾ä£¬ÀàËÆjQuery£¬ÓÃÄäÃûº¯Êı
-    post(
-        "https://www.freej.top",
-        mapOf<String, String>(Pair("username", "fanrj"), Pair("password", "pass123")),
-        fun(data: String, error: String) {
-            println(data)
-            println(error)
-        })
-
-    // »Øµ÷Ö»ÓĞÒ»ÌõÓï¾ä£¬ÓÃlambda±í´ïÊ½£¬´Ë´¦lambda±í´ïÊ½ÀàĞÍ¿ÉÒÔÍÆ¶Ï²»ÓÃĞ´
-    post("https://www.freej.top", mapOf<String, String>(Pair("username", "fanrj"), Pair("password", "pass123")), { data, error -> println(data) })
-
-    //post("https://www.freej.top",mapOf<String,String>(Pair("username","fanrj"),Pair("password", "pass123")),{data:String,error:String-> println(data)})
-
-    // map¶¨Òå
-    val m1 = mapOf<String, String>("username" to "fanrj", "password" to "fanrj")
-    val m2 = mapOf<String, Int>(Pair("A", 13), Pair("B", 14))
-
-    // map±éÀú
-    m1.forEach(::println)
-    m2.forEach({
-        println(it.key + " = " + it.value)
-    })
-
+    val func2 = { s1: String, s2: String -> "I am another lambda, and I have to arguments: $s1,$s2" }
+    print(func2.invoke("hello", "world"))
 }
 
 /**
- * ÀàËÆjQueryµÄ»Øµ÷º¯Êı¶¨Òå
- * ÔÚcallbackÖĞ´¦Àí·µ»Ø
  *
- * º¯Êı¶¨ÒåÖĞµÄº¯Êı²ÎÊı
- *  callback: (data: String, error: String) -> Unit
- *   ²ÎÊıÃû     º¯Êı²ÎÊı1     º¯Êı²ÎÊı2       ·µ»ØÀàĞÍ
+ * mapå®šä¹‰
  *
- *  »Øµ÷º¯Êı·µ»Ø¿ÕÖµUnit²»¿ÉÊ¡ÂÔ
+ * 1. å¯å˜mapä¸ä¸å¯å˜map
+ * mapOfå®šä¹‰ä¸å¯å˜map, æ— æ³•å¢åˆ æ”¹, åªèƒ½æŸ¥è¯¢
+ * mutableMapOfå®šä¹‰å¯å˜map, å¯ä»¥ä»»æ„å¢åˆ æ”¹æŸ¥
+ *
+ *
+ * 2. mapå…ƒç´ å®šä¹‰æ–¹å¼
+ * æ–¹å¼1: Pair(key, value)
+ * æ–¹å¼2: key to value
+ *
+ *
+ * 3. mapéå†
+ *
+ *
+ * 4. æ–°å¢
+ *    kotlin1.3è¯­æ³•ä¿®æ”¹,ä¸å»ºè®®ç”¨put,ç›´æ¥ä½¿ç”¨pythonç±»ä¼¼çš„å­—å…¸èµ‹å€¼
+ *
+ *
+ * 5. è·å–ä¸ä¿®æ”¹
+ *    ç±»ä¼¼pythonå­—å…¸
+ *
  */
-fun post(url: String, data: Map<String, String>, callback: (data: String, error: String) -> Unit) {
-    callback(url + "?" + data.get("username") + "=" + data.get("password"), "success")
-    // ·½·¨µ÷ÓÃµÄÁíÒ»ÖÖĞÎÊ½
-//    callback.invoke("»Øµ÷2", "success")
+fun mapDemo() {
+    val map1 = mapOf(Pair("user1", 13), Pair("user2", 14))
+    val map2 = mutableMapOf("user3" to 15, "user4" to 16)
+
+    map1.forEach {
+        println("${it.key} = ${it.value}")
+    }
+
+    map2["user5"] = 17
+    map2["user4"] = 14
+
+    map2.keys.forEach(::println)
+}
+
+/**
+ * æ¨¡æ‹Ÿjquery ajax
+ *
+ * @param url
+ * @param data
+ * @param callback
+ */
+fun post(url: String, data: Map<String, String>, callback: (data: Any, error: Any?) -> Unit) {
+    println("send ajax request to $url ...")
+    println()
+
+    println("request parameters: ")
+    data.forEach{
+        println("${it.key} = ${it.value}")
+    }
+    println()
+    println("I received the response and start to call the callback ...")
+    val result = listOf("student1", "student2", "student3")
+    val error = null
+    callback(result, error)
 }
